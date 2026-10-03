@@ -11,6 +11,7 @@ Built from your `port1.zip` (cinematic intro) plus the best parts of your two po
 - `css/styles.css` — intro styles; `css/portfolio.css` — portfolio styles (colour tokens at top)
 - `js/app.js`, `js/voice.js`, `js/tailwind-config.js` — intro logic
 - `js/portfolio.js` — portfolio logic (filters, case-study sheet, contact form, theme, menu)
+- `assets/portrait.png` — the intro portrait, stored locally so it can never expire
 - `tools/check.js` — static sanity checks, see below
 
 ## Contact details
@@ -33,7 +34,7 @@ duplicated into the HTML, and that no CSS rule has gone unused.
 1. Add real `link` URLs to the projects in `data.js` (they fall back to GitHub until then).
 2. Skill percentages in `data.js` are placeholders; the portfolio page shows skills as tags only. The intro's Skills popup still shows the bars.
 3. Put `Manas_Kumar_Mishra_Resume.pdf` next to `portfolio.html`.
-4. Your portrait is loaded from an external Google URL in `index.html`. Save the photo into `assets/` and change the `src` so it never expires.
+4. ~~External portrait URL~~ — done: the photo is now `assets/portrait.png`.
 5. Contact form posts to Formspree (`xbjvedwq`); falls back to a pre-filled `mailto:`.
 
 Run locally: `python3 -m http.server` then open http://localhost:8000
