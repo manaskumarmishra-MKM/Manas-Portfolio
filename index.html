@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#090A0F"><title>Access Terminal // Manas Kumar Mishra</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="js/tailwind-config.js"></script>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+
+<body class="bg-canvas-void text-on-surface font-body-md text-body-md antialiased min-h-screen selection:bg-primary-container selection:text-on-primary-container">
+
+  <!-- START GATE: browsers only allow speech after a click -->
+  <div id="start-gate" class="fixed inset-0 z-[200] bg-canvas-void flex flex-col items-center justify-center gap-5 text-center px-6">
+    <span class="font-code-meta text-code-meta text-text-secondary">SYSTEM: OPTICAL RIG v3.8 • STANDBY</span>
+    <h1 class="font-display-hero-mobile text-display-hero-mobile sm:font-display-hero sm:text-display-hero text-on-surface">MANAS KUMAR MISHRA</h1>
+    <button id="start-btn" class="animate-cta-beam px-8 py-4 rounded-xl bg-primary-container text-on-primary-container font-label-action text-label-action font-bold border border-primary-container/50">
+      [ START INTRO WITH SOUND ]
+    </button>
+    <a href="portfolio.html" class="font-code-meta text-code-meta text-text-secondary hover:text-primary">Skip intro</a>
+  </div>
+
+  <!-- HEADER -->
+  <header class="w-full bg-surface-charcoal/85 backdrop-blur-xl px-4 py-3 flex flex-wrap items-center justify-between gap-4 sticky top-0 z-50 border-b border-surface-glass-border">
+    <div class="flex items-center gap-3">
+      <span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-container opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-primary-container"></span></span>
+      <div class="flex flex-col">
+        <span class="font-code-tech text-code-tech text-primary tracking-widest">MANAS // CINEMATIC_INIT <span class="text-[9px] px-1.5 rounded bg-primary-container/20 text-primary-container border border-primary-container/30">ONLINE</span></span>
+        <span class="font-code-meta text-code-meta text-text-secondary">SYSTEM: OPTICAL RIG v3.8 • CALIBRATED</span>
+      </div>
+    </div>
+
+    <div class="hidden lg:flex items-center gap-6 px-4 py-1.5 rounded-lg bg-canvas-void/80 border border-surface-glass-border">
+      <span class="font-code-meta text-code-meta text-primary" id="timecode-display">TC: 00:00:00:00 [24 FPS]</span>
+      <span class="font-code-meta text-code-meta text-text-secondary">50mm ANAMORPHIC // f/1.4</span>
+      <span class="font-code-meta text-code-meta text-primary">LATENCY: <b id="latency-val">12ms</b></span>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <button id="audio-toggle-btn" class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface-container hover:bg-surface-container-high border border-surface-glass-border hover:border-primary/40 transition-all" title="Toggle sound">
+        <span class="flex items-end gap-0.5 h-3.5 w-4" id="audio-eq-bars">
+          <span class="w-0.5 bg-primary-container rounded-full eq-bar-1"></span>
+          <span class="w-0.5 bg-primary-container rounded-full eq-bar-2"></span>
+          <span class="w-0.5 bg-primary-container rounded-full eq-bar-3"></span>
+          <span class="w-0.5 bg-primary-container rounded-full eq-bar-4"></span>
+        </span>
+        <span class="font-label-action text-label-action text-text-secondary" id="audio-state-text">[ SOUND: ACTIVE ]</span>
+      </button>
+      <button id="autoplay-toggle-btn" class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-container border border-surface-glass-border text-text-secondary hover:text-primary font-label-action text-label-action" title="Auto-advance stages">
+        <span id="autoplay-text">[ AUTO-CYCLE: ON ]</span>
+      </button>
+      <a href="portfolio.html" class="flex items-center gap-2 px-4 py-1.5 rounded-lg bg-primary-container text-on-primary-container font-label-action text-label-action font-bold hover:bg-primary transition-all border border-primary/40">
+        [ SKIP INTRO ] <span class="material-symbols-outlined text-sm">arrow_forward</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- STAGE TIMELINE -->
+  <section class="w-full px-4 lg:px-12 py-3 bg-canvas-void/95 border-b border-surface-glass-border overflow-x-auto">
+    <div class="flex items-center gap-2 min-w-max mx-auto w-fit" id="stage-nav"></div>
+  </section>
+
+  <main class="w-full px-3 sm:px-6 lg:px-12 py-4 flex flex-col gap-6 max-w-7xl mx-auto">
+
+    <!-- HERO VIEWPORT -->
+    <div class="relative w-full aspect-[16/9] md:aspect-[2.39/1] bg-canvas-void rounded-xl overflow-hidden shadow-2xl flex items-center justify-center border border-surface-glass-border">
+      <div class="absolute inset-0 bg-gradient-to-r from-canvas-void/90 via-transparent to-canvas-void/90 z-10 pointer-events-none"></div>
+      <div class="absolute -top-32 left-1/2 -translate-x-1/2 w-[34rem] h-[34rem] bg-primary-container/10 rounded-full blur-[90px] pointer-events-none animate-rim-glow"></div>
+      <div class="absolute -bottom-24 left-1/4 w-96 h-96 bg-secondary-container/25 rounded-full blur-[100px] pointer-events-none"></div>
+      <div class="absolute inset-0 pointer-events-none z-[15] overflow-hidden">
+        <span class="absolute top-1/4 left-1/5 w-2 h-2 rounded-full bg-primary-container/70 mote-1"></span>
+        <span class="absolute top-1/3 right-1/4 w-1.5 h-1.5 rounded-full bg-secondary/80 mote-2"></span>
+        <span class="absolute bottom-1/3 left-1/3 w-2.5 h-2.5 rounded-full bg-primary/60 mote-3"></span>
+      </div>
+      <div class="absolute left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-primary-container to-transparent pointer-events-none z-20 animate-scanline"></div>
+
+      <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none opacity-30 select-none">
+        <h2 class="font-headline-lg text-headline-lg text-primary tracking-[0.25em] blur-[1px]">MANAS</h2>
+        <p class="font-headline-sm text-headline-sm text-secondary tracking-[0.2em] -mt-2">KUMAR MISHRA</p>
+        <div class="mt-4 flex flex-col gap-1 font-label-action text-label-action text-primary/80 opacity-60">
+          <span>[+] DEVELOPER</span><span>[+] BUILDER</span><span>[+] PROBLEM SOLVER</span><span>[+] LEARNER</span><span>[+] EXPLORER</span>
+        </div>
+      </div>
+
+      <div class="relative z-0 h-full flex items-center justify-center">
+        <img id="main-stage-img" alt="Manas Kumar Mishra seated in a studio armchair with cyan and violet rim lighting"
+             class="h-full w-auto object-cover max-h-[85vh] transition-all duration-700 ease-out animate-rim-glow"
+             src="https://lh3.googleusercontent.com/aida-public/AB6AXuA6YR4b87QRFdueyJS0LH7wMxwMa5HePqTFGPeWcT-QrFZx7Jq_85Nw9Qr6M7p_KtXjvEoj9wHB_FQOcNywdaCumvIdgFFN9hzhIZ6YOljZukSbnKoF87map5uEU6x3py80Zf_zmVm3JAf4_hMvLFmvUjvPQ4AjWEsoejwGgPG5oKTx3IkGpeuCpicwQQo5FqrNA-xGjdkZxyDbtac1XZEa22hy49jExMQoLH6EPs5hDTzsND2q6q0JHRAHDhn8OkeSmg" />
+      </div>
+
+      <!-- HUD overlay -->
+      <div class="absolute inset-0 pointer-events-none z-20 flex flex-col justify-between p-4 sm:p-8">
+        <div class="flex justify-between items-start">
+          <div class="flex flex-col gap-1 bg-canvas-void/40 p-2 rounded">
+            <span class="font-code-meta text-code-meta text-primary-container font-bold">[ OCULAR_REC // READY ]</span>
+            <span class="font-code-meta text-code-meta text-text-secondary">TARGET: MANAS_KUMAR_MISHRA</span>
+            <span class="font-code-meta text-code-meta text-text-secondary" id="fov-display"></span>
+          </div>
+          <div class="text-right flex flex-col gap-1 bg-canvas-void/40 p-2 rounded">
+            <span class="font-code-meta text-code-meta text-secondary font-bold">[ SENSOR: 35.8 × 23.9 mm CMOS ]</span>
+            <span class="font-code-meta text-code-meta text-text-secondary">ANAMORPHIC SQUEEZE: 2.0x</span>
+            <span class="font-code-meta text-code-meta text-text-secondary" id="iso-display"></span>
+          </div>
+        </div>
+
+        <div class="absolute inset-0 flex items-center justify-center">
+          <div id="reticle-box" class="relative w-52 h-52 flex items-center justify-center transition-all duration-700">
+            <span class="absolute top-0 left-0 w-5 h-0.5 bg-primary-container"></span><span class="absolute top-0 left-0 w-0.5 h-5 bg-primary-container"></span>
+            <span class="absolute top-0 right-0 w-5 h-0.5 bg-primary-container"></span><span class="absolute top-0 right-0 w-0.5 h-5 bg-primary-container"></span>
+            <span class="absolute bottom-0 left-0 w-5 h-0.5 bg-primary-container"></span><span class="absolute bottom-0 left-0 w-0.5 h-5 bg-primary-container"></span>
+            <span class="absolute bottom-0 right-0 w-5 h-0.5 bg-primary-container"></span><span class="absolute bottom-0 right-0 w-0.5 h-5 bg-primary-container"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-primary-container animate-ping"></span>
+            <div id="focal-lock-badge" class="absolute -bottom-7 font-code-meta text-code-meta text-primary-container bg-canvas-void/90 border border-primary-container/40 px-2.5 py-0.5 rounded"></div>
+          </div>
+        </div>
+
+        <div class="flex justify-between items-end">
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-lg bg-surface-charcoal/90 border border-primary-container/40 flex items-center justify-center">
+              <span class="font-headline-sm text-headline-sm font-bold text-primary-container">M</span>
+            </div>
+            <div class="flex flex-col">
+              <span class="font-label-action text-label-action text-on-surface font-bold">MANAS KUMAR MISHRA</span>
+              <span class="font-code-meta text-code-meta text-primary">ROLE: CSE BUILDER &amp; DEVELOPER</span>
+            </div>
+          </div>
+          <div class="hidden md:flex flex-col bg-surface-charcoal/90 px-3.5 py-2 rounded-lg border border-surface-glass-border">
+            <span class="font-code-meta text-code-meta text-primary-container font-bold" id="ocular-lock-stat"></span>
+            <span class="font-code-meta text-code-meta text-text-secondary" id="stage-status-stat"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VOICE PANEL -->
+    <div class="w-full bg-surface-charcoal/90 rounded-xl p-4 sm:p-6 border border-surface-glass-border flex flex-col md:flex-row gap-6">
+      <div class="flex-1 flex flex-col gap-3">
+        <span class="font-code-tech text-code-tech text-primary-container font-bold">[ AUDIO CHANNEL 01 // VOICE INTRO ]</span>
+        <div class="p-4 sm:p-5 rounded-lg bg-canvas-void/85 border border-surface-glass-border min-h-[104px] flex items-center">
+          <p id="voice-dialogue" class="font-body-lg text-body-lg text-on-surface select-text" aria-live="polite"></p>
+        </div>
+        <div class="flex flex-wrap items-center gap-2">
+          <button id="replay-btn" class="px-3.5 py-1.5 rounded-lg bg-surface-container hover:bg-surface-container-high text-primary-container font-label-action text-label-action border border-primary-container/30 hover:border-primary-container active:scale-95">[ ⟳ REPLAY INTRO ]</button>
+          <button id="mute-voice-btn" class="px-3.5 py-1.5 rounded-lg bg-surface-container hover:bg-surface-container-high text-text-secondary hover:text-on-surface font-label-action text-label-action border border-surface-glass-border active:scale-95">[ MUTE VOICE ]</button>
+          <button id="speed-toggle-btn" class="px-3.5 py-1.5 rounded-lg bg-surface-container hover:bg-surface-container-high text-text-secondary hover:text-primary font-label-action text-label-action border border-surface-glass-border active:scale-95">[ ⚡ SPEED 1.0x ]</button>
+        </div>
+        <p id="voice-warning" class="hidden font-code-meta text-code-meta text-text-secondary">This browser has no speech voices; the text will play without audio.</p>
+      </div>
+
+      <div class="w-full md:w-64 flex flex-col gap-3 justify-center bg-canvas-void/80 p-4 rounded-lg border border-surface-glass-border">
+        <span class="font-code-meta text-code-meta text-text-secondary">SPECTRUM RTA</span>
+        <div id="spectrum-bars" class="flex items-end justify-between h-16 gap-1 px-1">
+          <div class="flex-1 bg-primary/70 rounded-t eq-bar-1"></div><div class="flex-1 bg-primary/80 rounded-t eq-bar-2"></div>
+          <div class="flex-1 bg-primary-container rounded-t eq-bar-3"></div><div class="flex-1 bg-primary-container rounded-t eq-bar-4"></div>
+          <div class="flex-1 bg-primary/80 rounded-t eq-bar-5"></div><div class="flex-1 bg-secondary/80 rounded-t eq-bar-6"></div>
+          <div class="flex-1 bg-secondary-fixed rounded-t eq-bar-2"></div><div class="flex-1 bg-secondary rounded-t eq-bar-3"></div>
+          <div class="flex-1 bg-secondary/70 rounded-t eq-bar-4"></div><div class="flex-1 bg-primary/80 rounded-t eq-bar-5"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="w-full bg-gradient-to-r from-surface-charcoal via-surface-container to-surface-charcoal rounded-xl p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6 border border-surface-glass-border">
+      <div class="flex flex-col gap-2 text-center md:text-left">
+        <span class="font-code-tech text-code-tech text-primary-container font-bold">STAGE 06 COMPLETE // GATEWAY UNLOCKED</span>
+        <h3 class="font-headline-md text-headline-md text-on-surface">Experience the Full Interactive Workspace</h3>
+        <p class="font-body-md text-body-md text-text-secondary max-w-xl">Projects, verified skills, engineering journey, resume and a direct contact terminal.</p>
+      </div>
+      <a href="portfolio.html" class="animate-cta-beam px-8 py-4 rounded-xl bg-primary-container text-on-primary-container font-label-action text-label-action font-bold hover:bg-primary transition-all border border-primary-container/50">[ ENTER PORTFOLIO DASHBOARD ➔ ]</a>
+    </div>
+
+    <!-- QUICK TELEPORT -->
+    <div id="teleport-row" class="w-full flex flex-wrap items-center justify-center gap-3 py-2">
+      <span class="font-code-meta text-code-meta text-text-secondary">Quick Teleport:</span>
+    </div>
+  </main>
+
+  <footer class="w-full bg-canvas-void/90 py-6 px-4 mt-6 border-t border-surface-glass-border">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+      <div class="flex flex-col gap-1 text-center md:text-left">
+        <span class="font-headline-sm text-headline-sm font-bold">MANAS KUMAR MISHRA <span class="font-code-meta text-code-meta text-primary border border-surface-glass-border px-2 rounded">// B.TECH CSE</span></span>
+        <span class="font-code-meta text-code-meta text-text-secondary tracking-wider">BUILD • LEARN • IMPROVE • REPEAT</span>
+      </div>
+      <span class="font-code-meta text-code-meta text-text-secondary opacity-60">© 2026 Manas Kumar Mishra</span>
+    </div>
+  </footer>
+
+  <!-- TOAST -->
+  <div id="hud-toast" class="fixed bottom-6 right-6 z-[999] pointer-events-none transition-all duration-300 translate-y-8 opacity-0 flex items-center gap-3 bg-surface-charcoal/95 border border-primary-container/60 px-4 py-3 rounded-xl max-w-sm">
+    <div class="flex flex-col">
+      <span id="toast-title" class="font-code-tech text-[11px] text-primary-container font-bold"></span>
+      <span id="toast-msg" class="font-body-sm text-[13px] text-on-surface"></span>
+    </div>
+  </div>
+
+  <!-- MODAL -->
+  <div id="teleport-modal" class="fixed inset-0 z-[100] bg-canvas-void/80 backdrop-blur-md hidden items-center justify-center p-3 sm:p-6" role="dialog" aria-modal="true">
+    <div class="relative w-full max-w-3xl max-h-[90vh] bg-surface-charcoal/95 border border-primary-container/40 rounded-2xl flex flex-col overflow-hidden">
+      <div class="h-1 w-full bg-gradient-to-r from-primary-container via-secondary to-primary-container"></div>
+      <div class="px-5 py-4 border-b border-surface-glass-border flex items-center justify-between">
+        <span id="modal-telemetry-tag" class="font-code-tech text-code-tech text-primary font-bold"></span>
+        <button id="modal-close-btn" class="px-3 py-1 rounded-lg bg-surface-container border border-surface-glass-border text-text-secondary hover:text-primary font-code-meta text-code-meta">[ ESC // CLOSE ✕ ]</button>
+      </div>
+      <div id="modal-body-content" class="p-5 sm:p-7 overflow-y-auto flex flex-col gap-6"></div>
+      <div class="px-5 py-3.5 border-t border-surface-glass-border flex justify-end gap-2">
+        <button id="resume-copy-btn" class="hidden px-3 py-1.5 rounded-lg bg-surface-container text-primary-container font-label-action text-label-action border border-primary-container/40">[ COPY SUMMARY ]</button>
+        <button id="modal-dismiss-btn" class="px-3.5 py-1.5 rounded-lg bg-surface-container text-text-secondary hover:text-on-surface font-label-action text-label-action border border-surface-glass-border">[ DISMISS ]</button>
+        <a id="modal-action-cta" href="portfolio.html" class="px-4 py-1.5 rounded-lg bg-primary-container text-on-primary-container hover:bg-primary font-label-action text-label-action font-bold">[ JUMP TO WORKSPACE ]</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/voice.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

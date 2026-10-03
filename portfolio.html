@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" style="-webkit-text-size-adjust:100%">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Manas Kumar Mishra — B.Tech CSE student building web, Android, embedded and AI-powered products."><meta name="theme-color" content="#090A0F"><meta property="og:title" content="Manas Kumar Mishra — Android, AI/ML & Full-Stack"><meta property="og:description" content="Projects, journey and contact."><meta property="og:type" content="website"><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ctext y=%27.9em%27 font-size=%2790%27%3E⚡%3C/text%3E%3C/svg%3E"><title>Manas Kumar Mishra — Developer & Builder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Plus+Jakarta+Sans:wght@400;500;600&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/portfolio.css">
+</head>
+<body>
+<header><div class="wrap bar">
+ <a class="brand mono" href="#hero"><span class="dot"></span>MANAS // DEV</a>
+ <nav id="nav"><a href="index.html">Intro</a><a href="#about">About</a><a href="#skills">Skills</a><a href="#projects">Projects</a><a href="#journey">Journey</a><a href="#achievements">Highlights</a><a href="#resume">Resume</a><a href="#contact">Contact</a></nav>
+ <div class="bar-r"><button class="btn sm" id="theme" aria-label="Toggle light or dark theme">◐ Theme</button><button class="btn sm" id="menu" aria-label="Open menu" aria-expanded="false" aria-controls="nav">☰</button></div>
+</div></header>
+
+<main>
+<section id="hero"><div class="wrap hero-g">
+ <div>
+  <span class="pill mono"><span class="dot"></span>Open to internships &amp; opportunities</span>
+  <h1>Manas Kumar <span>Mishra</span></h1>
+  <div class="roles" id="roles">Android Developer</div>
+  <p class="lead" id="lead"></p>
+  <div class="ctas"><a class="btn pri" href="#projects">Explore my work ↓</a><a class="btn" href="#resume">Download résumé</a><a class="btn" href="#contact">Get in touch</a></div>
+  <div class="stats" id="stats"></div>
+ </div>
+ <div class="id-card">
+  <div class="id-top mono"><span>MKM // IDENTITY</span><span class="eyebrow">● verified</span></div>
+  <div class="avatar" role="img" aria-label="Initials MM">MM</div>
+  <div class="id-foot mono"><span>India · IST (UTC+5:30)</span><span class="eyebrow">Build · Learn · Improve · Repeat</span></div>
+ </div>
+</div></section>
+
+<section id="about" class="alt"><div class="wrap"><span class="mono eyebrow">About</span><h2>Engineering that starts below the abstractions</h2><div class="about-g" id="aboutG"></div></div></section>
+
+<section id="skills"><div class="wrap">
+ <span class="mono eyebrow">Skills</span>
+ <h2>Tools I work with every day</h2>
+ <div class="grid g3" id="skillGrid"></div>
+</div></section>
+
+<section id="projects" class="alt"><div class="wrap">
+ <span class="mono eyebrow">Projects</span>
+ <h2>Problem → solution → impact</h2>
+ <div class="filters" id="filters"></div>
+ <div class="grid g3" id="projGrid"></div>
+</div></section>
+
+<section id="journey"><div class="wrap"><span class="mono eyebrow">Journey</span><h2>How I got here</h2><div class="tl" id="tl"></div></div></section>
+
+<section id="achievements" class="alt"><div class="wrap"><span class="mono eyebrow">Highlights</span><h2>What I have done so far</h2><div class="grid g3" id="ach"></div></div></section>
+
+<section id="resume"><div class="wrap"><span class="mono eyebrow">Résumé</span><h2>The short version</h2><div style="display:flex;justify-content:flex-end;margin-bottom:10px"><button id="cp" class="btn">Copy summary</button></div><div class="card" id="resumeCard"></div></div></section>
+
+<section id="contact" class="alt"><div class="wrap">
+ <span class="mono eyebrow">Contact</span>
+ <h2>Have a project or role in mind?</h2>
+ <div class="c-g">
+  <div class="card">
+   <p style="margin-bottom:8px">Internship, project or collaboration — send a message.</p>
+   <a id="emailLink" class="chan" href="#"><span class="mono">Email</span><b id="emailText" style="color:var(--text)"></b></a>
+   <a id="linkedinLink" class="chan" href="#" target="_blank" rel="noopener noreferrer"><span class="mono">LinkedIn</span><b id="linkedinText" style="color:var(--text)"></b></a>
+   <a id="githubLink" class="chan" href="#" target="_blank" rel="noopener noreferrer"><span class="mono">GitHub</span><b id="githubText" style="color:var(--text)"></b></a>
+   <div class="chan"><span class="mono">Location</span><b id="locationText" style="color:var(--text)"></b></div>
+  </div>
+  <div class="card">
+   <form id="cf" action="https://formspree.io/f/xbjvedwq" method="POST" novalidate>
+    <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" style="display:none">
+    <input type="hidden" name="_subject" value="[Portfolio] New inquiry">
+    <div class="two">
+     <div><label for="n"><span class="mono">Your name</span><span class="mono" id="ns"></span></label><input id="n" name="name" placeholder="Alex Mercer" required></div>
+     <div><label for="e"><span class="mono">Your email</span><span class="mono" id="es"></span></label><input id="e" name="email" type="email" placeholder="alex@company.io" required></div>
+    </div>
+    <div><label for="s"><span class="mono">Subject</span></label><input id="s" name="subject" placeholder="Internship / project collaboration" required></div>
+    <div><label for="m"><span class="mono">Message</span><span class="mono" id="cc">0 / 1500</span></label><textarea id="m" name="message" rows="5" maxlength="1500" placeholder="Tell me about the project, role or timeline" required></textarea></div>
+    <button class="btn pri" id="send" type="submit" style="justify-content:center">Send message</button>
+   </form>
+   <div class="msg good" id="okm"><b style="color:var(--cy)">Message sent.</b><p>Thanks — I reply within 24 business hours. <span class="mono" id="ts"></span></p><button class="btn sm" id="again" style="margin-top:10px">Send another</button></div>
+   <div class="msg fail" id="errm"><b style="color:var(--err)">Couldn't send the message.</b><p>Check your connection and retry, or email me directly.</p><div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap"><a class="btn sm" id="mt" href="#">Open email app</a><button class="btn sm" id="retry">Retry</button></div></div>
+  </div>
+ </div>
+</div></section>
+</main>
+
+<footer><div class="wrap mono"><span>© <span id="yr"></span> Manas Kumar Mishra</span><span style="display:flex;gap:16px"><a id="footerGitHub" href="#" target="_blank" rel="noopener noreferrer">GitHub</a><a id="footerLinkedIn" href="#" target="_blank" rel="noopener noreferrer">LinkedIn</a><a id="footerEmail" href="#">Email</a></span><a href="#hero">Back to top ↑</a></div></footer>
+
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="mt1"><div class="sheet">
+ <button class="btn sm x" id="mx" aria-label="Close">✕ Close</button>
+ <span class="mono eyebrow" id="mm"></span><h3 id="mt1"></h3>
+ <h4>Problem</h4><p id="mp"></p><h4>Solution</h4><p id="ms"></p><h4>What it does</h4><p id="mr" style="color:var(--text)"></p><div class="tags" id="mg"></div>
+</div></div>
+<div id="toasts" aria-live="polite"></div>
+
+<script src="js/data.js"></script><script src="js/portfolio.js" defer></script>
+</body>
+</html>
