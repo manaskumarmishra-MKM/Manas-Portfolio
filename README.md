@@ -33,9 +33,12 @@ duplicated into the HTML, and that no CSS rule has gone unused.
 ## TODO before publishing
 1. Add real `link` URLs to the projects in `data.js` (they fall back to GitHub until then).
 2. Skill percentages in `data.js` are placeholders; the portfolio page shows skills as tags only. The intro's Skills popup still shows the bars.
-3. Put `Manas_Kumar_Mishra_Resume.pdf` next to `portfolio.html`.
+3. ~~Put `Manas_Kumar_Mishra_Resume.pdf` next to `portfolio.html`~~ — done: the file is in place and linked from the résumé section.
 4. ~~External portrait URL~~ — done: the photo is now `assets/portrait.png`.
-5. Contact form posts to Formspree (`xbjvedwq`); falls back to a pre-filled `mailto:`.
+5. Contact form posts to Formspree (`xbjvedwq`) over HTTPS with bounded input,
+   a request timeout, and no browser credentials or referrer; it falls back to
+   a pre-filled `mailto:` if submission fails. The public form endpoint is not a
+   secret, and client-side checks do not replace provider-side spam controls.
 
 Run locally: `python3 -m http.server` then open http://localhost:8000
 Deploy: drag the folder to Netlify Drop, or use GitHub Pages / Vercel.

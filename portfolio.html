@@ -66,13 +66,13 @@
   </div>
   <div class="card">
    <form id="cf" action="https://formspree.io/f/xbjvedwq" method="POST" novalidate>
-    <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" style="display:none">
+    <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" style="display:none">
     <input type="hidden" name="_subject" value="[Portfolio] New inquiry">
     <div class="two">
-     <div><label for="n"><span class="mono">Your name</span><span class="mono" id="ns"></span></label><input id="n" name="name" placeholder="Alex Mercer" required></div>
-     <div><label for="e"><span class="mono">Your email</span><span class="mono" id="es"></span></label><input id="e" name="email" type="email" placeholder="alex@company.io" required></div>
+     <div><label for="n"><span class="mono">Your name</span><span class="mono" id="ns"></span></label><input id="n" name="name" maxlength="100" autocomplete="name" placeholder="Alex Mercer" required></div>
+     <div><label for="e"><span class="mono">Your email</span><span class="mono" id="es"></span></label><input id="e" name="email" type="email" maxlength="254" autocomplete="email" placeholder="alex@company.io" required></div>
     </div>
-    <div><label for="s"><span class="mono">Subject</span></label><input id="s" name="subject" placeholder="Internship / project collaboration" required></div>
+    <div><label for="s"><span class="mono">Subject</span></label><input id="s" name="subject" maxlength="150" placeholder="Internship / project collaboration" required></div>
     <div><label for="m"><span class="mono">Message</span><span class="mono" id="cc">0 / 1500</span></label><textarea id="m" name="message" rows="5" maxlength="1500" placeholder="Tell me about the project, role or timeline" required></textarea></div>
     <button class="btn pri" id="send" type="submit" style="justify-content:center">Send message</button>
    </form>

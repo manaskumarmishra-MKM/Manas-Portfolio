@@ -25,6 +25,21 @@
       (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[char])
     );
 
+  const safeWebUrl = (value) => {
+    if (!String(value || "").trim()) return null;
+    try {
+      const url = new URL(value, window.location.href);
+      return url.protocol === "http:" || url.protocol === "https:" ? url.href : null;
+    } catch {
+      return null;
+    }
+  };
+
+  const mailtoUrl = (value) => {
+    const address = String(value || "").trim();
+    return /^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(address) ? `mailto:${address}` : "#";
+  };
+
   /** Builds a row of tag chips from a list of strings. */
   const renderTags = (tags) => tags.map((tag) => `<span class="tag">${escapeHtml(tag)}</span>`).join("");
 
@@ -137,7 +152,7 @@
       <a class="btn pri" href="Manas_Kumar_Mishra_Resume.pdf" download>Download PDF</a>
       <button type="button" class="btn" id="copy-summary">Copy summary</button>
       <button type="button" class="btn" id="print-resume">Print</button>
-      <a class="btn" href="${escapeHtml(SITE.githubUrl)}" target="_blank" rel="noopener noreferrer">GitHub</a>
+      <a class="btn" href="${escapeHtml(safeWebUrl(SITE.githubUrl) || "#")}" target="_blank" rel="noopener noreferrer">GitHub</a>
     </div>`;
 
   // The clipboard API rejects on insecure origins, so surface a toast rather
@@ -184,7 +199,7 @@
     .map((project, i) => {
       // Projects with no real link yet fall back to the GitHub profile, so the
       // link is never a dead end.
-      const href = project.link || SITE.githubUrl;
+      const href = safeWebUrl(project.link) || safeWebUrl(SITE.githubUrl) || "#";
       return `
         <article class="card proj rv" data-cat="${escapeHtml(project.cat)}">
           <div>
@@ -365,21 +380,21 @@
   // "https://github.com/manaskumarmishra-MKM" -> "github.com/manaskumarmishra-MKM"
   const githubHandle = SITE.githubUrl.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "");
 
-  $("#emailLink").href = `mailto:${email}`;
+  $("#emailLink").href = mailtoUrl(email);
   $("#emailText").textContent = email;
 
-  $("#linkedinLink").href = linkedin;
+  $("#linkedinLink").href = safeWebUrl(linkedin) || "#";
   $("#linkedinText").textContent = "Connect on LinkedIn";
 
-  $("#githubLink").href = SITE.githubUrl;
+  $("#githubLink").href = safeWebUrl(SITE.githubUrl) || "#";
   $("#githubText").textContent = githubHandle;
 
   $("#locationText").textContent = `${location} · Hybrid & remote`;
 
   // Footer mirrors the same three links.
-  $("#footerEmail").href = `mailto:${email}`;
-  $("#footerLinkedIn").href = linkedin;
-  $("#footerGitHub").href = SITE.githubUrl;
+  $("#footerEmail").href = mailtoUrl(email);
+  $("#footerLinkedIn").href = safeWebUrl(linkedin) || "#";
+  $("#footerGitHub").href = safeWebUrl(SITE.githubUrl) || "#";
 
   // The fallback "open email app" button should already be usable if Formspree
   // is down before anything has been typed.
@@ -387,7 +402,9 @@
 
   /* ------------------------------------------------------------- contact form */
   const form = $("#cf");
+  const contactEndpoint = "https://formspree.io/f/xbjvedwq";
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  let submissionInFlight = false;
 
   // Read fields through form.elements: a control named "name" or "email" is
   // shadowed by the form's own IDL attribute of that name, so `form.name` is
@@ -423,17 +440,24 @@
   });
 
   const formIsValid = () =>
-    Boolean(fieldValue("name")) &&
+    fieldValue("name").length >= 2 &&
+    fieldValue("name").length <= 100 &&
+    fieldValue("email").length <= 254 &&
     emailPattern.test(fieldValue("email")) &&
-    Boolean(fieldValue("subject")) &&
-    Boolean(fieldValue("message"));
+    fieldValue("subject").length > 0 &&
+    fieldValue("subject").length <= 150 &&
+    fieldValue("message").length > 0 &&
+    fieldValue("message").length <= 1500;
 
   /** Prefills the "open email app" link with whatever was already typed, so a
    *  failed send does not cost the visitor their message. */
   const buildMailtoFallback = () => {
     const subject = fieldValue("subject");
     const body = `${fieldValue("message")}\n\n— ${fieldValue("name")} (${fieldValue("email")})`;
-    $("#mt").href = `mailto:${SITE.contact.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    const fallback = mailtoUrl(email);
+    $("#mt").href = fallback === "#"
+      ? "#"
+      : `${fallback}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   };
 
   const showForm = () => {
@@ -443,19 +467,30 @@
   };
 
   async function submitForm() {
+    if (submissionInFlight) return;
     if (!formIsValid()) {
       showToast("Fill in your name, a valid email, a subject and a message.");
       return;
     }
 
+    submissionInFlight = true;
     sendButton.disabled = true;
     sendButton.textContent = "Sending…";
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000);
 
     try {
-      const response = await fetch(form.action, {
+      const payload = new FormData(form);
+      ["name", "email", "subject", "message"].forEach((name) => payload.set(name, fieldValue(name)));
+      const response = await fetch(contactEndpoint, {
         method: "POST",
         headers: { Accept: "application/json" },
-        body: new FormData(form),
+        body: payload,
+        credentials: "omit",
+        cache: "no-store",
+        redirect: "error",
+        referrerPolicy: "no-referrer",
+        signal: controller.signal,
       });
       if (!response.ok) throw new Error(`Formspree replied ${response.status}`);
 
@@ -464,13 +499,16 @@
       $("#okm").classList.add("show");
       $("#ts").textContent = new Date().toLocaleTimeString();
       form.reset();
-    } catch {
+    } catch (error) {
       // Formspree unreachable (offline, blocked, bad endpoint). Offer the typed
       // message as a pre-filled email instead of losing it.
+      console.error("Contact form submission failed:", error);
       buildMailtoFallback();
       form.style.display = "none";
       $("#errm").classList.add("show");
     } finally {
+      clearTimeout(timeoutId);
+      submissionInFlight = false;
       sendButton.disabled = false;
       sendButton.textContent = "Send message";
     }

@@ -20,6 +20,15 @@
    *  Used both for display and for an inline width style, so a stray value in
    *  data.js can never inject arbitrary CSS. */
   const percent = (value) => Math.max(0, Math.min(100, Number(value) || 0));
+  const safeUrl = (value) => {
+    if (!String(value || "").trim()) return null;
+    try {
+      const url = new URL(value, window.location.href);
+      return url.protocol === "http:" || url.protocol === "https:" ? url.href : null;
+    } catch {
+      return null;
+    }
+  };
 
   /* ---------- Timecode + latency ---------- */
   // SMPTE-style timecode: HH:MM:SS:FF at 24 fps. Hours and minutes are both
@@ -161,7 +170,7 @@
   const modal = $("teleport-modal");
   const body = $("modal-body-content");
 
-  const tag = (t, c = "primary-container") => `<span class="font-code-meta text-[11px] px-2 py-0.5 rounded bg-surface-container text-${c}">${esc(t)}</span>`;
+  const tag = (t, c = "primary-container") => `<span class="font-code-meta text-[11px] leading-relaxed px-2.5 py-1 rounded-md bg-surface-container text-${c}">${esc(t)}</span>`;
   const heading = (t, sub) => `<div><h3 class="font-headline-sm text-headline-sm font-bold">${esc(t)}</h3><p class="font-code-meta text-code-meta text-text-secondary">${esc(sub)}</p></div>`;
 
   const renderers = {
@@ -175,9 +184,9 @@
             </div>
             <p class="font-body-sm text-body-sm text-text-secondary">${esc(p.desc)}</p>
           </div>
-          <div class="flex flex-wrap gap-1.5 pt-3 border-t border-surface-glass-border">
+          <div class="flex flex-wrap items-center gap-2.5 pt-3 border-t border-surface-glass-border">
             ${p.tags.map((t) => tag(t)).join("")}
-            ${p.link ? `<a class="ml-auto font-code-meta text-code-meta text-primary-container hover:underline" href="${esc(p.link)}" target="_blank" rel="noopener">Open</a>` : ""}
+            ${safeUrl(p.link) ? `<a class="ml-auto font-code-meta text-code-meta text-primary-container hover:underline" href="${esc(safeUrl(p.link))}" target="_blank" rel="noopener noreferrer">Open</a>` : ""}
           </div>
         </div>`).join("");
       return heading("Featured Projects", `${S.projects.length} systems loaded`) + `<div class="grid grid-cols-1 md:grid-cols-2 gap-4">${cards}</div>`;
@@ -216,7 +225,7 @@
       return `
         <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-surface-glass-border">
           ${heading(r.title, r.sub)}
-          <button onclick="window.print()" class="px-3 py-1.5 rounded-lg bg-surface-container text-on-surface font-label-action text-label-action border border-surface-glass-border">[ PRINT ]</button>
+          <button type="button" id="resume-print-btn" class="px-3 py-1.5 rounded-lg bg-surface-container text-on-surface font-label-action text-label-action border border-surface-glass-border">[ PRINT ]</button>
         </div>
         <div class="p-5 rounded-xl bg-canvas-void/90 border border-surface-glass-border space-y-4 font-body-sm">
           <p class="text-text-secondary leading-relaxed">${esc(r.objective)}</p>
@@ -230,17 +239,31 @@
 
   let lastFocus = null;
   function openModal(t) {
+    const renderer = renderers[t.key];
+    const href = safeUrl(t.href);
+    if (!renderer || !href) {
+      showToast("UNAVAILABLE", "This destination is not configured safely.");
+      return;
+    }
     lastFocus = document.activeElement;
     $("modal-telemetry-tag").textContent = `// TELEPORT // ${t.label.replace(/\s+/g, "_")}`;
-    body.innerHTML = renderers[t.key]();
-    $("modal-action-cta").href = t.href;
+    body.innerHTML = renderer();
+    $("modal-action-cta").href = href;
     $("modal-action-cta").textContent = t.cta;
+    const printButton = $("resume-print-btn");
+    if (printButton) printButton.addEventListener("click", () => window.print());
     const resumeCopyBtn = $("resume-copy-btn");
     if (t.key === "resume") {
       resumeCopyBtn.classList.remove("hidden");
       resumeCopyBtn.addEventListener("click", () => {
-        navigator.clipboard && navigator.clipboard.writeText(S.resume.copyText);
-        showToast("COPIED", "Profile summary copied to clipboard.");
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(S.resume.copyText).then(
+            () => showToast("COPIED", "Profile summary copied to clipboard."),
+            () => showToast("COPY UNAVAILABLE", "Clipboard access was denied.")
+          );
+        } else {
+          showToast("COPY UNAVAILABLE", "Clipboard access is unavailable.");
+        }
       });
     } else {
       resumeCopyBtn.classList.add("hidden");
@@ -260,11 +283,16 @@
   S.teleports.forEach((t) => {
     const b = document.createElement("button");
     b.className = "teleport-btn px-3.5 py-1.5 rounded-lg bg-surface-container hover:bg-surface-container-high text-text-secondary hover:text-primary-container font-code-tech text-code-tech border border-surface-glass-border hover:border-primary-container/50 active:scale-95 flex items-center gap-1.5";
-    b.innerHTML = `<span class="material-symbols-outlined text-xs">${t.icon}</span><span>[ ${esc(t.label)} ]</span>`;
+    b.innerHTML = `<span class="material-symbols-outlined text-xs">${esc(t.icon)}</span><span>[ ${esc(t.label)} ]</span>`;
     b.addEventListener("click", () => {
       if (t.external) {
+        const href = safeUrl(S.githubUrl);
+        if (!href) {
+          showToast("UNAVAILABLE", "The external profile link is not configured safely.");
+          return;
+        }
+        window.open(href, "_blank", "noopener,noreferrer");
         showToast("EXTERNAL LINK", "Opening GitHub profile...");
-        window.open(S.githubUrl, "_blank", "noopener,noreferrer");
       } else openModal(t);
     });
     row.appendChild(b);
