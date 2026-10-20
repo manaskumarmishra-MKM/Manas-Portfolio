@@ -1,6 +1,4 @@
-# Manas Kumar Mishra — Portfolio
-
-Built from your `port1.zip` (cinematic intro) plus the best parts of your two portfolio drafts.
+# Manas Kumar Mishra — Portfo
 
 ## Pages
 - `index.html` — cinematic intro with voice (your original), links to the portfolio
